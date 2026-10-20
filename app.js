@@ -82,9 +82,9 @@
   }
 
   function idDoHash() {
-    const encontrado = /^#base-(\d+)$/.exec(location.hash || "");
+    const encontrado = /^#base-([a-z0-9]+)$/i.exec(location.hash || "");
     if (!encontrado) return null;
-    const id = Number(encontrado[1]);
+    const id = encontrado[1].toUpperCase();
     return idValido(id) ? id : null;
   }
 
@@ -144,7 +144,7 @@
       y: base.py + 1,
       "text-anchor": "middle",
       "dominant-baseline": "middle",
-      "font-size": String(base.id).length > 1 ? 26 : 32,
+      "font-size": 32,
     });
     numero.textContent = String(base.id);
     return numero;
@@ -329,12 +329,12 @@
   function ligar() {
     $("zonas").addEventListener("click", (evento) => {
       const zona = evento.target.closest(".zona");
-      if (zona) aoAtivar(Number(zona.dataset.id), "mapa");
+      if (zona) aoAtivar(zona.dataset.id, "mapa");
     });
 
     $("pins").addEventListener("click", (evento) => {
       const pino = evento.target.closest(".pin");
-      if (pino) aoAtivar(Number(pino.dataset.id), "mapa");
+      if (pino) aoAtivar(pino.dataset.id, "mapa");
     });
 
     $("pins").addEventListener("keydown", (evento) => {
@@ -342,9 +342,9 @@
       if (!pino) return;
       if (evento.key === "Enter" || evento.key === " ") {
         evento.preventDefault();
-        aoAtivar(Number(pino.dataset.id), "mapa");
+        aoAtivar(pino.dataset.id, "mapa");
       } else {
-        teclaDeSeta(evento, Number(pino.dataset.id), "mapa");
+        teclaDeSeta(evento, pino.dataset.id, "mapa");
       }
     });
 
