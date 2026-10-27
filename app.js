@@ -200,6 +200,24 @@
     document.title = aberta.titulo + " · " + EVENTO.nome;
   }
 
+  function montarDinamica(dinamica) {
+    const bloco = el("div", { class: "dinamica" });
+    bloco.append(el("p", { class: "rotulo" }, [dinamica.titulo || "Dinâmica"]));
+
+    if (dinamica.itens && dinamica.itens.length) {
+      const lista = el("ul", { class: "dinamica-lista" });
+      dinamica.itens.forEach((item) => {
+        lista.append(el("li", {}, [item]));
+      });
+      bloco.append(lista);
+    }
+
+    if (dinamica.texto) {
+      bloco.append(el("p", { class: "dinamica-texto" }, [dinamica.texto]));
+    }
+    return bloco;
+  }
+
   function renderPainel() {
     const base = basePorId(selecionada);
     const painel = $("painel");
@@ -210,6 +228,7 @@
       el("p", { class: "painel-kicker" }, [base.titulo]),
       el("h3", { id: "painel-titulo" }, [base.apelido])
     );
+    if (base.dinamica) painel.append(montarDinamica(base.dinamica));
   }
 
   function pintar(opcoes) {
@@ -308,8 +327,84 @@
     }
   }
 
+  function esconderSetaPino() {
+    const seta = $("seta-pino");
+    if (!seta) return;
+    seta.classList.remove("is-visivel");
+    seta.replaceChildren();
+    seta.removeAttribute("transform");
+  }
+
+  function mostrarSetaPino(base) {
+    const seta = $("seta-pino");
+    if (!seta || !base) return;
+
+    const y = Math.max(70, base.py - 34);
+    seta.setAttribute("transform", "translate(" + base.px + " " + y + ")");
+    seta.replaceChildren();
+
+    const bolha = svg("g", { class: "seta-pino-bolha" });
+    bolha.append(svg("path", {
+      d: "M0 0 C-2 -10 -18 -26 -18 -42 A18 18 0 1 1 18 -42 C18 -26 2 -10 0 0 Z",
+      fill: "#ea4335",
+      stroke: "#ffffff",
+      "stroke-width": 2.5,
+      "stroke-linejoin": "round",
+    }));
+    bolha.append(svg("circle", { cx: 0, cy: -40, r: 7.5, fill: "#ffffff" }));
+    bolha.append(svg("circle", {
+      cx: -5, cy: -46, r: 2.4, fill: "#ffffff", opacity: "0.55",
+    }));
+    /* Animação nativa SVG — sobe e desce apontando o pino */
+    bolha.append(svg("animateTransform", {
+      attributeName: "transform",
+      type: "translate",
+      values: "0 -24; 0 8; 0 -24",
+      keyTimes: "0; 0.5; 1",
+      dur: "0.7s",
+      repeatCount: "indefinite",
+      calcMode: "spline",
+      keySplines: "0.42 0 0.58 1; 0.42 0 0.58 1",
+    }));
+
+    seta.append(bolha);
+    seta.classList.remove("is-visivel");
+    void seta.getBoundingClientRect();
+    seta.classList.add("is-visivel");
+  }
+
+  function apontarPino(id) {
+    if (!idValido(id)) return;
+    selecionada = id;
+    definirHash(id);
+    pintar();
+    const base = basePorId(id);
+    const pino = document.querySelector('#pins .pin[data-id="' + id + '"]');
+    if (!pino || !base) return;
+    pino.focus({ preventScroll: true });
+    document.querySelectorAll("#pins .pin.is-apontado").forEach((item) => {
+      item.classList.remove("is-apontado");
+    });
+    pino.classList.add("is-apontado");
+    mostrarSetaPino(base);
+    const viewport = document.querySelector(".mapa-viewport");
+    if (viewport) {
+      const rect = viewport.getBoundingClientRect();
+      const mapa = viewport.querySelector(".mapa");
+      const escala = mapa.clientWidth / VIEW.w;
+      const alvoX = base.px * escala - rect.width / 2;
+      viewport.scrollTo({ left: Math.max(0, alvoX), behavior: "smooth" });
+    }
+  }
+
   function selecionar(id, origem) {
     if (!idValido(id)) return;
+    if (origem === "mapa") {
+      document.querySelectorAll("#pins .pin.is-apontado").forEach((item) => {
+        item.classList.remove("is-apontado");
+      });
+      esconderSetaPino();
+    }
     selecionada = id;
     definirHash(id);
     pintar();
@@ -422,7 +517,7 @@
       const item = evento.target.closest("[data-base]");
       if (!item) return;
       fecharPopupEquipe();
-      selecionar(item.dataset.base, "mapa");
+      apontarPino(item.dataset.base);
     });
   }
 

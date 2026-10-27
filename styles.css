@@ -212,6 +212,26 @@ body.popup-aberto { overflow: hidden; }
 .pin.is-selecionada .pin-circulo,
 .pin:hover .pin-circulo { stroke-width: 4; }
 
+.pin.is-apontado .pin-circulo {
+  fill: var(--ok);
+}
+
+.pin.is-apontado .pin-anel {
+  opacity: 1;
+  stroke: var(--ok);
+  stroke-width: 4;
+}
+
+.seta-pino {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.seta-pino.is-visivel {
+  opacity: 1;
+}
+
+
 .pin-numero {
   fill: #fff;
   font-family: var(--serif);
@@ -454,6 +474,23 @@ body.popup-aberto { overflow: hidden; }
   font-size: 1.8rem;
   font-weight: 680;
   letter-spacing: -0.03em;
+}
+
+.dinamica { margin-top: 12px; }
+
+.dinamica-lista {
+  margin: 10px 0 0;
+  padding: 0 0 0 1.15rem;
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.dinamica-texto {
+  margin: 10px 0 0;
+  line-height: 1.45;
+  color: var(--ink-soft);
 }
 
 .painel-apelido {
