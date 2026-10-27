@@ -100,7 +100,7 @@
       class: "zona-rect",
       cx: base.px,
       cy: base.py,
-      r: 64,
+      r: 44,
       fill: base.fundo,
     }));
     return grupo;
@@ -115,9 +115,9 @@
     });
     const paraDentro = base.etiqueta === "abaixo" ? 1 : -1;
     const ok = svg("g", { class: "pin-ok" });
-    const okX = base.px + 46;
-    const okY = base.py + 12 * paraDentro;
-    ok.append(svg("circle", { cx: okX, cy: okY, r: 14, fill: "#243328" }));
+    const okX = base.px + 30;
+    const okY = base.py + 10 * paraDentro;
+    ok.append(svg("circle", { cx: okX, cy: okY, r: 10, fill: "#243328" }));
     const visto = svg("text", {
       x: okX,
       y: okY + 1,
@@ -128,9 +128,9 @@
     ok.append(visto);
 
     grupo.append(
-      svg("circle", { class: "pin-toque", cx: base.px, cy: base.py, r: 64 }),
-      svg("circle", { class: "pin-anel", cx: base.px, cy: base.py, r: 46 }),
-      svg("circle", { class: "pin-circulo", cx: base.px, cy: base.py, r: 36, fill: base.cor }),
+      svg("circle", { class: "pin-toque", cx: base.px, cy: base.py, r: 48 }),
+      svg("circle", { class: "pin-anel", cx: base.px, cy: base.py, r: 32 }),
+      svg("circle", { class: "pin-circulo", cx: base.px, cy: base.py, r: 24, fill: base.cor }),
       vistoNumero(base),
       ok
     );
@@ -144,7 +144,7 @@
       y: base.py + 1,
       "text-anchor": "middle",
       "dominant-baseline": "middle",
-      "font-size": 32,
+      "font-size": 20,
     });
     numero.textContent = String(base.id);
     return numero;
@@ -267,9 +267,76 @@
     const popup = $("popup");
     if (!popup || popup.hidden) return;
     popup.hidden = true;
-    document.body.classList.remove("popup-aberto");
+    if ($("popup-equipe") && $("popup-equipe").hidden) {
+      document.body.classList.remove("popup-aberto");
+    }
     const pino = document.querySelector('#pins .pin[data-id="' + selecionada + '"]');
     if (pino) pino.focus();
+  }
+
+  function equipePorId(id) {
+    if (typeof EQUIPES === "undefined") return null;
+    return EQUIPES.find((equipe) => equipe.id === id) || null;
+  }
+
+  function renderAgenda(equipe) {
+    const lista = $("agenda-lista");
+    const titulo = $("equipe-titulo");
+    const composicao = $("equipe-composicao");
+    if (!lista || !titulo || !equipe) return;
+    texto(titulo, equipe.nome);
+    if (composicao) texto(composicao, equipe.composicao || "");
+    lista.replaceChildren();
+
+    if (!equipe.agenda || !equipe.agenda.length) {
+      lista.append(el("li", {}, [
+        el("p", { class: "agenda-vazia" }, ["A agenda desta equipe ainda não foi definida."]),
+      ]));
+      return;
+    }
+
+    equipe.agenda.forEach((item) => {
+      const base = basePorId(item.base);
+      const botao = el("button", {
+        type: "button",
+        class: "agenda-item",
+        "data-base": item.base,
+      });
+      if (base) botao.style.setProperty("--cor", base.cor);
+      botao.append(
+        el("span", { class: "agenda-letra" }, [item.base]),
+        el("span", { class: "agenda-hora" }, [item.hora]),
+        el("span", {}, [
+          el("span", { class: "agenda-base" }, [base ? base.titulo : "Base " + item.base]),
+          el("span", { class: "agenda-nome" }, [base ? base.apelido : ""]),
+        ])
+      );
+      lista.append(el("li", {}, [botao]));
+    });
+  }
+
+  let abertoEquipeEm = 0;
+
+  function abrirPopupEquipe(id) {
+    const equipe = equipePorId(id);
+    if (!equipe) return;
+    renderAgenda(equipe);
+    const popup = $("popup-equipe");
+    if (!popup) return;
+    popup.hidden = false;
+    abertoEquipeEm = performance.now();
+    document.body.classList.add("popup-aberto");
+    const fechar = $("fechar-equipe");
+    if (fechar) fechar.focus();
+  }
+
+  function fecharPopupEquipe() {
+    const popup = $("popup-equipe");
+    if (!popup || popup.hidden) return;
+    popup.hidden = true;
+    if ($("popup") && $("popup").hidden) {
+      document.body.classList.remove("popup-aberto");
+    }
   }
 
   function selecionar(id, origem) {
@@ -367,12 +434,39 @@
       fecharPopup();
     });
     document.addEventListener("keydown", (evento) => {
-      if (evento.key === "Escape") fecharPopup();
+      if (evento.key !== "Escape") return;
+      if ($("popup-equipe") && !$("popup-equipe").hidden) fecharPopupEquipe();
+      else fecharPopup();
     });
 
     window.addEventListener("hashchange", () => {
       const id = idDoHash();
       if (id && id !== selecionada) selecionar(id, "mapa");
+    });
+
+    const equipes = document.querySelector(".equipes");
+    if (equipes) {
+      equipes.addEventListener("click", (evento) => {
+        const botao = evento.target.closest(".equipe");
+        if (!botao) return;
+        equipes.querySelectorAll(".equipe").forEach((item) => {
+          item.classList.toggle("is-ativa", item === botao);
+        });
+        abrirPopupEquipe(botao.dataset.equipe);
+      });
+    }
+
+    $("fechar-equipe").addEventListener("click", fecharPopupEquipe);
+    $("popup-equipe-fundo").addEventListener("click", () => {
+      if (performance.now() - abertoEquipeEm < 450) return;
+      fecharPopupEquipe();
+    });
+
+    $("agenda-lista").addEventListener("click", (evento) => {
+      const item = evento.target.closest("[data-base]");
+      if (!item) return;
+      fecharPopupEquipe();
+      selecionar(item.dataset.base, "mapa");
     });
   }
 
@@ -382,11 +476,8 @@
       return;
     }
 
-    texto($("chamada"), EVENTO.chamada);
     texto($("nome"), EVENTO.nome);
-    texto($("quando"), EVENTO.quando);
     texto($("lead"), EVENTO.lead);
-    if (typeof MAPA !== "undefined" && $("lugar")) texto($("lugar"), MAPA.lugar);
 
     const salvo = ler();
     atual = salvo.atual;

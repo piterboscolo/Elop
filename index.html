@@ -17,10 +17,12 @@
 
   <header class="topo">
     <div>
-      <p class="kicker" id="chamada"></p>
-      <h1 id="nome">ELOP</h1>
-      <p class="quando" id="quando"></p>
-      <p class="lead" id="lead">Toque em cada base para ver a tarefa.</div>
+      <div class="titulo-linha">
+        <h1 id="nome">ELOP</h1>
+        <img class="logo" src="logo-essgt.png" alt="Brasão da Escola Superior de Sargentos">
+      </div>
+      <p class="lead" id="lead">Toque em cada base para ver a tarefa.</p>
+    </div>
   </header>
 
   <main class="layout">
@@ -43,8 +45,15 @@
         <li><span class="legenda-pin" aria-hidden="true">R</span> Base</li>
         <li><span class="legenda-ok" aria-hidden="true">✓</span> Concluída</li>
       </ul>
-      <p id="lugar" class="ordem"></p>
-      <p id="mapa-ajuda" class="mapa-nota">Toque na letra para abrir a base. No cartão, use o botão para marcar onde você está.</p>
+
+      <nav class="equipes" aria-label="Equipes">
+        <button type="button" class="equipe" data-equipe="01">Equipe 01</button>
+        <button type="button" class="equipe" data-equipe="02">Equipe 02</button>
+        <button type="button" class="equipe" data-equipe="03">Equipe 03</button>
+        <button type="button" class="equipe" data-equipe="04">Equipe 04</button>
+        <button type="button" class="equipe" data-equipe="05">Equipe 05</button>
+        <button type="button" class="equipe" data-equipe="06">Equipe 06</button>
+      </nav>
     </section>
   </main>
 
@@ -55,6 +64,19 @@
       <article id="painel" class="painel" aria-label="Detalhe da base selecionada">
         <h3 id="painel-titulo">Base</h3>
         <p class="resumo">Carregando o mapa…</p>
+      </article>
+    </aside>
+  </div>
+
+  <div id="popup-equipe" class="popup" hidden>
+    <button type="button" class="popup-fundo" id="popup-equipe-fundo" aria-label="Fechar"></button>
+    <aside class="diretorio calendario" id="calendario" role="dialog" aria-modal="true" aria-labelledby="equipe-titulo">
+      <button type="button" class="popup-fechar" id="fechar-equipe">Fechar</button>
+      <article class="painel painel-equipe" aria-label="Agenda da equipe">
+        <p class="painel-kicker">Agenda</p>
+        <h3 id="equipe-titulo">Equipe</h3>
+        <p id="equipe-composicao" class="equipe-composicao"></p>
+        <ol id="agenda-lista" class="agenda-lista"></ol>
       </article>
     </aside>
   </div>

@@ -47,13 +47,22 @@ button { font: inherit; color: inherit; }
 .pular:focus { top: 12px; }
 
 .topo {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
   max-width: 1180px;
   margin: 0 auto;
   padding: 28px 20px 8px;
+}
+
+.titulo-linha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  display: block;
+  flex: none;
+  width: auto;
+  height: 72px;
 }
 
 .kicker {
@@ -522,6 +531,117 @@ body.popup-aberto { overflow: hidden; }
   cursor: pointer;
 }
 
+.equipes {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.equipe {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: rgba(255, 250, 243, 0.85);
+  font-weight: 600;
+  font-size: 0.92rem;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.equipe:hover { background: #fff; }
+
+.equipe.is-ativa {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fff;
+}
+
+.painel-equipe {
+  border-top-color: var(--red);
+}
+
+.equipe-composicao {
+  margin: 8px 0 0;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.equipe-composicao:empty { display: none; }
+
+.agenda-lista {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.agenda-item {
+  display: grid;
+  grid-template-columns: 34px 64px 1fr;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: 2px solid transparent;
+  border-left: 5px solid var(--cor, var(--line));
+  border-radius: 14px;
+  background: rgba(255, 250, 243, 0.9);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.agenda-item:hover { border-color: var(--cor, var(--line)); border-left-width: 5px; }
+
+.agenda-letra {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--cor, var(--trail));
+  color: #fff;
+  font-family: var(--serif);
+  font-weight: 680;
+  font-size: 1rem;
+}
+
+.agenda-hora {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 680;
+  color: var(--ink);
+}
+
+.agenda-base {
+  display: block;
+  font-weight: 700;
+  color: var(--cor, var(--ink));
+}
+
+.agenda-nome {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.agenda-vazia {
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
 .sem-js {
   max-width: 40rem;
   margin: 0 auto 32px;
@@ -530,17 +650,16 @@ body.popup-aberto { overflow: hidden; }
 
 button:focus-visible,
 .item:focus-visible,
-.recomecar:focus-visible {
+.recomecar:focus-visible,
+.equipe:focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 3px;
 }
 
 @media (max-width: 860px) {
-  .topo {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 16px 16px 4px;
-  }
+  .topo { padding: 16px 16px 4px; }
+
+  .logo { height: 52px; }
 
   h1 { font-size: 2.4rem; }
 
@@ -576,5 +695,7 @@ button:focus-visible,
   }
 
   .painel h3 { font-size: 1.6rem; }
+
+  .equipe { font-size: 0.78rem; padding: 10px 6px; }
 }
 
