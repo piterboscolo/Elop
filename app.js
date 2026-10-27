@@ -200,54 +200,23 @@
     document.title = aberta.titulo + " · " + EVENTO.nome;
   }
 
-  function renderPainel(foco) {
+  function renderPainel() {
     const base = basePorId(selecionada);
     const painel = $("painel");
     if (!base) return;
     painel.style.setProperty("--cor", base.cor);
     painel.replaceChildren();
-
-    const aqui = base.id === atual;
-    const feita = concluidas.has(base.id);
-    const kicker = [base.titulo, base.duracao].filter(Boolean).join(" · ");
     painel.append(
-      el("p", { class: "painel-kicker" }, [kicker]),
+      el("p", { class: "painel-kicker" }, [base.titulo]),
       el("h3", { id: "painel-titulo" }, [base.apelido])
     );
-
-    if (base.resumo) painel.append(el("p", { class: "resumo" }, [base.resumo]));
-    if (base.fazer) {
-      painel.append(
-        el("p", { class: "rotulo" }, ["O que fazer"]),
-        el("p", { class: "fazer" }, [base.fazer])
-      );
-    }
-
-    painel.append(el("div", { class: "acoes" }, [
-      el("button", {
-        type: "button",
-        class: "botao botao-principal" + (aqui ? " is-aqui" : ""),
-        "data-acao": "aqui",
-        disabled: aqui,
-      }, [aqui ? "Esta base está marcada" : "Estou nesta base"]),
-      el("button", {
-        type: "button",
-        class: "botao botao-secundario",
-        "data-acao": "feita",
-      }, [feita ? "Desmarcar conclusão" : "Concluir esta base"]),
-    ]));
-
-    if (foco) {
-      const alvo = painel.querySelector('[data-acao="' + foco + '"]');
-      if (alvo && !alvo.disabled) alvo.focus();
-    }
   }
 
   function pintar(opcoes) {
     const opts = opcoes || {};
     atualizarClasses();
     renderStatus();
-    renderPainel(opts.foco);
+    renderPainel();
     salvar();
   }
 
@@ -359,7 +328,7 @@
     if (!idValido(id)) return;
     if (concluidas.has(id)) concluidas.delete(id);
     else concluidas.add(id);
-    pintar({ foco: "feita" });
+    pintar();
   }
 
   function aoAtivar(id, origem) {
@@ -412,19 +381,6 @@
         aoAtivar(pino.dataset.id, "mapa");
       } else {
         teclaDeSeta(evento, pino.dataset.id, "mapa");
-      }
-    });
-
-    $("painel").addEventListener("click", (evento) => {
-      const botao = evento.target.closest("[data-acao]");
-      if (!botao) return;
-      toque.em = 0;
-      if (botao.dataset.acao === "aqui") {
-        estarAqui(selecionada);
-        const feita = $("painel").querySelector('[data-acao="feita"]');
-        if (feita) feita.focus();
-      } else if (botao.dataset.acao === "feita") {
-        alternarConcluida(selecionada);
       }
     });
 
