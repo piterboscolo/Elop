@@ -88,7 +88,16 @@
     return idValido(id) ? id : null;
   }
 
+  function limparHash() {
+    if (!location.hash) return;
+    history.replaceState(null, "", location.pathname + location.search);
+  }
+
   function definirHash(id) {
+    if (!id || !idValido(id)) {
+      limparHash();
+      return;
+    }
     const hash = "#base-" + id;
     if (location.hash !== hash) history.replaceState(null, "", hash);
   }
@@ -222,9 +231,12 @@
   }
 
   function renderStatus() {
-    const aqui = basePorId(atual);
     const aberta = basePorId(selecionada);
-    if (!aqui || !aberta) return;
+    if (!aberta) {
+      texto($("status"), "");
+      document.title = EVENTO.nome;
+      return;
+    }
     const frase = aberta.titulo + " · " + aberta.apelido;
     texto($("status"), frase);
     document.title = aberta.titulo + " · " + EVENTO.nome;
@@ -550,7 +562,17 @@
 
     window.addEventListener("hashchange", () => {
       const id = idDoHash();
-      if (id && id !== selecionada) selecionar(id, "mapa");
+      if (id) {
+        if (id !== selecionada) selecionar(id, "mapa");
+        return;
+      }
+      if (!selecionada) return;
+      selecionada = 0;
+      document.querySelectorAll("#pins .pin.is-apontado").forEach((item) => {
+        item.classList.remove("is-apontado");
+      });
+      esconderSetaPino();
+      pintar();
     });
 
     const equipes = document.querySelector(".equipes");
@@ -590,12 +612,14 @@
 
     const salvo = ler();
     atual = salvo.atual;
-    selecionada = idDoHash() || salvo.selecionada;
     concluidas = salvo.concluidas;
+    /* Sem #base-X na URL: abre limpo, sem base selecionada */
+    selecionada = idDoHash() || 0;
 
     montarMapa();
     ligar();
-    definirHash(selecionada);
+    if (selecionada) definirHash(selecionada);
+    else limparHash();
     pronto = true;
     pintar();
 
