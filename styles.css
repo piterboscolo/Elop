@@ -509,6 +509,36 @@ body.popup-aberto { overflow: hidden; }
   line-height: 1.4;
 }
 
+.dinamica-docs {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.dinamica-docs-lista {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.dinamica-doc-link {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--cor, var(--red));
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.dinamica-doc-link:hover {
+  background: var(--cor, var(--red));
+  color: #fff;
+}
+
 .dinamica-texto {
   margin: 10px 0 0;
   line-height: 1.45;

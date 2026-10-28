@@ -242,6 +242,29 @@
     document.title = aberta.titulo + " · " + EVENTO.nome;
   }
 
+  function montarDocsDinamica(docs) {
+    const bloco = el("div", { class: "dinamica-docs" });
+    bloco.append(el("p", { class: "rotulo" }, ["Documentos"]));
+    const lista = el("div", { class: "dinamica-docs-lista" });
+    docs.forEach((doc) => {
+      if (!doc || !doc.href) return;
+      const link = document.createElement("a");
+      link.className = "dinamica-doc-link";
+      link.href = doc.href;
+      link.setAttribute("target", "_blank");
+      link.setAttribute("rel", "noopener noreferrer");
+      link.textContent = doc.rotulo || "Abrir documento";
+      link.addEventListener("click", (evento) => {
+        evento.preventDefault();
+        evento.stopPropagation();
+        window.open(doc.href, "_blank", "noopener,noreferrer");
+      });
+      lista.append(link);
+    });
+    bloco.append(lista);
+    return bloco;
+  }
+
   function montarDinamica(dinamica) {
     const bloco = el("div", { class: "dinamica" });
     bloco.append(el("p", { class: "rotulo" }, [dinamica.titulo || "Dinâmica"]));
@@ -249,9 +272,15 @@
     if (dinamica.itens && dinamica.itens.length) {
       const lista = el("ul", { class: "dinamica-lista" });
       dinamica.itens.forEach((item) => {
-        lista.append(el("li", {}, [item]));
+        const textoItem = typeof item === "string" ? item : (item && item.texto) || "";
+        if (!textoItem) return;
+        lista.append(el("li", {}, [textoItem]));
       });
       bloco.append(lista);
+    }
+
+    if (dinamica.docs && dinamica.docs.length) {
+      bloco.append(montarDocsDinamica(dinamica.docs));
     }
 
     if (dinamica.texto) {

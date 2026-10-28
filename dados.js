@@ -45,6 +45,24 @@ const BASES = [
         "A equipe deverá realizar a aproximação e o primeiro atendimento ao policial",
         "Posteriormente procederá na preservação do local até a chegada da Perícia",
       ],
+      docs: [
+        {
+          rotulo: "5.05.00 — Deslocamento de viatura em patrulhamento",
+          href: "docs/Processo-5.05.00-Deslocamento-de-Vtr-em-Patrulhamento.pdf",
+        },
+        {
+          rotulo: "4.01.00 — Acompanhamento e Cerco",
+          href: "docs/Processo-4.01.00_Acompanhamento_e_Cerco_A.pdf",
+        },
+        {
+          rotulo: "5.19.00 — Resgate tático ao PM ferido",
+          href: "docs/Processo-5.19.00-Resgate-Tatico-ao-PM-Ferido.pdf",
+        },
+        {
+          rotulo: "2.05.00 — Preservação de local de crime",
+          href: "docs/Processo-2.05.00-Preservacao-Local-de-Crime_A.pdf",
+        },
+      ],
     },
     cor: "#ef6c00",
     fundo: "#ffe0b2",
@@ -66,6 +84,12 @@ const BASES = [
         "Apoio a US durante o atendimento",
         "Constatação da natureza correta",
         "Adotar as providências necessárias",
+      ],
+      docs: [
+        {
+          rotulo: "2.09.00 — Violência doméstica e sexual (Não se cale)",
+          href: "docs/Processo-2.09.00-ViolDomSex_nao-se-cale_FEV25.pdf",
+        },
       ],
     },
     cor: "#1565c0",
@@ -89,6 +113,12 @@ const BASES = [
         "Constatação da natureza correta",
         "Adotar as providências necessárias",
       ],
+      docs: [
+        {
+          rotulo: "5.15.00 — Defesa contra instrumentos usados como armas brancas",
+          href: "docs/Processo-5.15.00-Defesa-armas-brancas.pdf",
+        },
+      ],
     },
     cor: "#ad1457",
     fundo: "#f8bbd0",
@@ -110,6 +140,20 @@ const BASES = [
         "Apoio a US e coordenação da ocorrência",
         "Gerenciamento no sítio dos fatos",
         "Adotar as providências necessárias",
+      ],
+      docs: [
+        {
+          rotulo: "4.01.00 — Acompanhamento e Cerco",
+          href: "docs/Processo-4.01.00_Acompanhamento_e_Cerco.pdf",
+        },
+        {
+          rotulo: "1.02.00 — Abordagem policial (viatura 4 rodas)",
+          href: "docs/Processo-1.02.00-AbordagemPolVtr4Rodas.pdf",
+        },
+        {
+          rotulo: "2.05.00 — Preservação de local de crime",
+          href: "docs/Processo-2.05.00-Preservacao-Local-de-Crime.pdf",
+        },
       ],
     },
     cor: "#6a1b9a",
@@ -133,6 +177,12 @@ const BASES = [
         "A US identificará a complexidade da ocorrência e logo solicitará o apoio do CGP",
         "Ele, por sua vez, irá adotar as providências necessárias",
       ],
+      docs: [
+        {
+          rotulo: "2.02.00 — Desinteligência",
+          href: "docs/Processo-2.02.00-Desinteligencia_1.pdf",
+        },
+      ],
     },
     cor: "#00695c",
     fundo: "#b2dfdb",
@@ -155,6 +205,12 @@ const BASES = [
         "Testemunhas relataram possível subtração de aparelho celular antes do atropelamento",
         "Acionamento do CGP “F” para apoio e providências operacionais",
         "Permanência da equipe no local para esclarecimento dos fatos",
+      ],
+      docs: [
+        {
+          rotulo: "3.01.00 — Acidente de trânsito",
+          href: "docs/Processo-3.01.00-Acidente-de-Transito.pdf",
+        },
       ],
     },
     cor: "#283593",
