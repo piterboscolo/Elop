@@ -1,6 +1,6 @@
 :root {
-  --serif: "Fraunces", "Iowan Old Style", Palatino, Georgia, serif;
-  --sans: "Outfit", "Segoe UI", sans-serif;
+  --serif: "Roboto", "Segoe UI", sans-serif;
+  --sans: "Roboto", "Segoe UI", sans-serif;
   --ink: #241f1a;
   --ink-soft: #5e584e;
   --paper: #f7f1e6;
@@ -161,12 +161,34 @@ body.popup-aberto { overflow: hidden; }
 .mapa-dica { display: none; }
 
 .mapa-viewport {
+  position: relative;
   overflow-x: auto;
   border-radius: 30px;
   background: #1a241c;
   padding: 0;
   box-shadow: inset 0 0 0 1px rgba(36, 31, 26, 0.08), var(--sombra);
 }
+
+.dica-pino {
+  position: absolute;
+  z-index: 4;
+  transform: translate(-50%, calc(-100% - 14px));
+  max-width: min(260px, 70%);
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 2px solid var(--cor, var(--ink));
+  background: rgba(255, 250, 243, 0.96);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(36, 31, 26, 0.16);
+  pointer-events: none;
+  white-space: normal;
+}
+
+.dica-pino[hidden] { display: none; }
 
 .mapa {
   display: block;
@@ -530,6 +552,7 @@ body.popup-aberto { overflow: hidden; }
   border-radius: 999px;
   padding: 12px 16px;
   border: 2px solid transparent;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   touch-action: manipulation;
@@ -595,7 +618,7 @@ body.popup-aberto { overflow: hidden; }
   background: rgba(255, 250, 243, 0.85);
   font-family: var(--serif);
   font-weight: 680;
-  font-size: 1rem;
+  font-size: 1.2rem;
   line-height: 1;
   cursor: pointer;
   touch-action: manipulation;
@@ -744,6 +767,6 @@ button:focus-visible,
 
   .equipes-titulo { font-size: 1.2rem; }
 
-  .equipe { font-size: 0.95rem; }
+  .equipe { font-size: 1.1rem; }
 }
 

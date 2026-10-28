@@ -113,6 +113,9 @@
       role: "button",
       tabindex: "0",
     });
+    const nome = base.apelido || base.titulo;
+    const titulo = svg("title");
+    titulo.textContent = base.titulo + " — " + nome;
     const paraDentro = base.etiqueta === "abaixo" ? 1 : -1;
     const ok = svg("g", { class: "pin-ok" });
     const okX = base.px + 30;
@@ -128,6 +131,7 @@
     ok.append(visto);
 
     grupo.append(
+      titulo,
       svg("circle", { class: "pin-toque", cx: base.px, cy: base.py, r: 48 }),
       svg("circle", { class: "pin-anel", cx: base.px, cy: base.py, r: 32 }),
       svg("circle", { class: "pin-circulo", cx: base.px, cy: base.py, r: 24, fill: base.cor }),
@@ -135,6 +139,32 @@
       ok
     );
     return grupo;
+  }
+
+  function mostrarDicaPino(id) {
+    const dica = $("dica-pino");
+    const base = basePorId(id);
+    const viewport = document.querySelector(".mapa-viewport");
+    const mapa = $("mapa");
+    if (!dica || !base || !viewport || !mapa) return;
+
+    const nome = base.apelido || base.titulo;
+    dica.textContent = base.titulo + " — " + nome;
+    dica.style.setProperty("--cor", base.cor);
+    dica.hidden = false;
+
+    const escala = mapa.clientWidth / VIEW.w;
+    const left = base.px * escala;
+    const top = base.py * escala - 18;
+    dica.style.left = left + "px";
+    dica.style.top = top + "px";
+  }
+
+  function esconderDicaPino() {
+    const dica = $("dica-pino");
+    if (!dica) return;
+    dica.hidden = true;
+    dica.textContent = "";
   }
 
   function vistoNumero(base) {
@@ -244,6 +274,7 @@
   function abrirPopup() {
     const popup = $("popup");
     if (!popup || !popup.hidden) return;
+    esconderDicaPino();
     popup.hidden = false;
     abertoEm = performance.now();
     document.body.classList.add("popup-aberto");
@@ -339,33 +370,35 @@
     const seta = $("seta-pino");
     if (!seta || !base) return;
 
-    const y = Math.max(70, base.py - 34);
+    const y = Math.max(58, base.py - 28);
     seta.setAttribute("transform", "translate(" + base.px + " " + y + ")");
     seta.replaceChildren();
 
-    const bolha = svg("g", { class: "seta-pino-bolha" });
-    bolha.append(svg("path", {
+    const bolha = svg("g", { class: "seta-pino-bolha", transform: "scale(0.78)" });
+    const miolo = svg("g");
+    miolo.append(svg("path", {
       d: "M0 0 C-2 -10 -18 -26 -18 -42 A18 18 0 1 1 18 -42 C18 -26 2 -10 0 0 Z",
       fill: "#ea4335",
       stroke: "#ffffff",
       "stroke-width": 2.5,
       "stroke-linejoin": "round",
     }));
-    bolha.append(svg("circle", { cx: 0, cy: -40, r: 7.5, fill: "#ffffff" }));
-    bolha.append(svg("circle", {
+    miolo.append(svg("circle", { cx: 0, cy: -40, r: 7.5, fill: "#ffffff" }));
+    miolo.append(svg("circle", {
       cx: -5, cy: -46, r: 2.4, fill: "#ffffff", opacity: "0.55",
     }));
     /* Animação nativa SVG — sobe e desce apontando o pino */
-    bolha.append(svg("animateTransform", {
+    miolo.append(svg("animateTransform", {
       attributeName: "transform",
       type: "translate",
-      values: "0 -24; 0 8; 0 -24",
+      values: "0 -18; 0 6; 0 -18",
       keyTimes: "0; 0.5; 1",
       dur: "0.7s",
       repeatCount: "indefinite",
       calcMode: "spline",
       keySplines: "0.42 0 0.58 1; 0.42 0 0.58 1",
     }));
+    bolha.append(miolo);
 
     seta.append(bolha);
     seta.classList.remove("is-visivel");
@@ -387,14 +420,24 @@
     });
     pino.classList.add("is-apontado");
     mostrarSetaPino(base);
-    const viewport = document.querySelector(".mapa-viewport");
-    if (viewport) {
-      const rect = viewport.getBoundingClientRect();
-      const mapa = viewport.querySelector(".mapa");
+
+    /* Sobe a tela até o mapa e centraliza o pino com a bolha */
+    window.requestAnimationFrame(() => {
+      const viewport = document.querySelector(".mapa-viewport");
+      const mapa = $("mapa");
+      if (!viewport || !mapa) return;
+
       const escala = mapa.clientWidth / VIEW.w;
-      const alvoX = base.px * escala - rect.width / 2;
+      const alvoX = base.px * escala - viewport.clientWidth / 2;
       viewport.scrollTo({ left: Math.max(0, alvoX), behavior: "smooth" });
-    }
+
+      const mapaTopo = viewport.getBoundingClientRect().top + window.scrollY;
+      const pinoComBolha = mapaTopo + Math.max(0, base.py - 100) * escala;
+      window.scrollTo({
+        top: Math.max(0, pinoComBolha - 20),
+        behavior: "smooth",
+      });
+    });
   }
 
   function selecionar(id, origem) {
@@ -466,6 +509,21 @@
     $("pins").addEventListener("click", (evento) => {
       const pino = evento.target.closest(".pin");
       if (pino) aoAtivar(pino.dataset.id, "mapa");
+    });
+
+    $("pins").addEventListener("pointerover", (evento) => {
+      const pino = evento.target.closest(".pin");
+      if (pino) mostrarDicaPino(pino.dataset.id);
+    });
+
+    $("pins").addEventListener("pointerout", (evento) => {
+      const pino = evento.target.closest(".pin");
+      if (!pino) return;
+      const destino = evento.relatedTarget && evento.relatedTarget.closest
+        ? evento.relatedTarget.closest(".pin")
+        : null;
+      if (destino === pino) return;
+      esconderDicaPino();
     });
 
     $("pins").addEventListener("keydown", (evento) => {
